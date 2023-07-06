@@ -1,22 +1,23 @@
 const express = require("express");
+const { config } = require("../config/index");
 const router = express.Router();
 const GmailChecker = require("../services/GmailChecker");
 
 router.get("/", async (req, res) => {
   try {
     const gmailChecker = new GmailChecker(
-      process.env.GMAIL_EMAIL,
-      process.env.GMAIL_PASSWORD,
+      config.gmailEmail,
+      config.gmailPassword,
     );
     const unreadEmails = await gmailChecker.getUnreadEmailsCount();
 
     console.log(
-      `For ${process.env.GMAIL_EMAIL}, number of unread emails:${unreadEmails}`,
+      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, // Використовувати об'єкт конфігурації
     );
 
     res.json({
       status: "success",
-      message: `For ${process.env.GMAIL_EMAIL}, , number of unread emails: ${unreadEmails}`,
+      message: `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, // Виправлено дублювання коми та використання об'єкта конфігурації
     });
   } catch (error) {
     console.error("An error occurred:", error.message);

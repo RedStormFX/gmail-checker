@@ -16,10 +16,11 @@ app.get("/unread-emails", async (req, res) => {
     console.log(
       `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`,
     );
-    res.send(
-      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`,
-    );
+
+    const message = `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`;
+    res.send(message);
   } catch (error) {
+    console.error(error);
     res.status(500).send("An error occurred while fetching unread emails");
   }
 });
