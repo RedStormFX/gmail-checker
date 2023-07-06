@@ -11,15 +11,19 @@ router.get("/", async (req, res) => {
     const unreadEmails = await gmailChecker.getUnreadEmailsCount();
 
     console.log(
-      `На ${process.env.GMAIL_EMAIL}, кількість непрочитаних листів: ${unreadEmails}`,
+      `For ${process.env.GMAIL_EMAIL}, number of unread emails:${unreadEmails}`,
     );
 
-    res.send(
-      `На ${process.env.GMAIL_EMAIL}, кількість непрочитаних листів: ${unreadEmails}`,
-    );
+    res.json({
+      status: "success",
+      message: `For ${process.env.GMAIL_EMAIL}, , number of unread emails: ${unreadEmails}`,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong");
+    console.error("An error occurred:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong",
+    });
   }
 });
 

@@ -7,10 +7,11 @@ class GmailChecker {
   }
 
   async getUnreadEmailsCount() {
-    const browser = await puppeteer.launch({ headless: "new" });
-    const page = await browser.newPage();
-
+    let browser;
     try {
+      browser = await puppeteer.launch({ headless: "new" });
+      const page = await browser.newPage();
+
       await page.goto("https://mail.google.com", { waitUntil: "networkidle2" });
       await page.waitForSelector('input[type="email"]', { timeout: 10000 });
       await page.type('input[type="email"]', this.email);
@@ -31,9 +32,11 @@ class GmailChecker {
       return unreadCount.replace(/\D/g, ""); // remove non-numeric characters
     } catch (error) {
       console.error("An error occurred:", error);
-      return "Error";
+      throw error;
     } finally {
-      await browser.close();
+      if (browser) {
+        await browser.close();
+      }
     }
   }
 }
