@@ -1,6 +1,5 @@
 # Gmail Checker Service
-
-This project is an example of a web service that uses Puppeteer to automate logging into a Gmail account and checking the number of unread emails.
+Technical Task 
 
 ## Requirements
 
