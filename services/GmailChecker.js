@@ -19,14 +19,18 @@ class GmailChecker {
     await page.click("#passwordNext");
     await page.waitForSelector('div[role="navigation"]', { visible: true });
 
-    const unreadEmails = await page.evaluate(() => {
-      const element = document.querySelector('div[aria-label*="Unread"]');
-      return element ? element.textContent : "0";
-    });
+    const unreadEmailsElement = await page.$(".bsU");
+
+    let unreadCount = "0";
+    if (unreadEmailsElement) {
+      const innerText = await unreadEmailsElement.getProperty("innerText");
+      const innerTextValue = await innerText.jsonValue();
+      unreadCount = innerTextValue.replace(/\D/g, ""); // remove non-numeric characters
+    }
 
     await browser.close();
 
-    return unreadEmails;
+    return unreadCount;
   }
 }
 
