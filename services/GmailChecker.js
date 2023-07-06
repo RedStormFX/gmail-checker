@@ -9,7 +9,7 @@ class GmailChecker {
   async getUnreadEmailsCount() {
     let browser;
     try {
-      browser = await puppeteer.launch({ headless: "new" });
+      browser = await puppeteer.launch({ headless: false });
       const page = await browser.newPage();
 
       await page.goto("https://mail.google.com", { waitUntil: "networkidle2" });

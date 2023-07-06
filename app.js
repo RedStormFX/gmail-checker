@@ -27,4 +27,5 @@ app.get("/unread-emails", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Gmail checker service listening at http://localhost:${port}`);
+  console.log(`Tap on link pls http://localhost:${port}/unread-emails`);
 });
