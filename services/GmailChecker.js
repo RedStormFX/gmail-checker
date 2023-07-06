@@ -7,30 +7,34 @@ class GmailChecker {
   }
 
   async getUnreadEmailsCount() {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
 
-    await page.goto("https://mail.google.com");
-    await page.waitForSelector('input[type="email"]');
-    await page.type('input[type="email"]', this.email);
-    await page.click("#identifierNext");
-    await page.waitForSelector('input[type="password"]', { visible: true });
-    await page.type('input[type="password"]', this.password);
-    await page.click("#passwordNext");
-    await page.waitForSelector('div[role="navigation"]', { visible: true });
+    try {
+      await page.goto("https://mail.google.com", { waitUntil: "networkidle2" });
+      await page.waitForSelector('input[type="email"]', { timeout: 10000 });
+      await page.type('input[type="email"]', this.email);
+      await page.click("#identifierNext");
+      await page.waitForSelector('input[type="password"]', {
+        visible: true,
+        timeout: 10000,
+      });
+      await page.type('input[type="password"]', this.password);
+      await page.click("#passwordNext");
+      await page.waitForSelector(".bsU", { visible: true, timeout: 10000 });
 
-    const unreadEmailsElement = await page.$(".bsU");
+      const unreadEmailsElement = await page.$(".bsU");
+      const unreadCount = unreadEmailsElement
+        ? await unreadEmailsElement.evaluate((el) => el.innerText)
+        : "0";
 
-    let unreadCount = "0";
-    if (unreadEmailsElement) {
-      const innerText = await unreadEmailsElement.getProperty("innerText");
-      const innerTextValue = await innerText.jsonValue();
-      unreadCount = innerTextValue.replace(/\D/g, ""); // remove non-numeric characters
+      return unreadCount.replace(/\D/g, ""); // remove non-numeric characters
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return "Error";
+    } finally {
+      await browser.close();
     }
-
-    await browser.close();
-
-    return unreadCount;
   }
 }
 

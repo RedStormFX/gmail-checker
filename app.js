@@ -1,11 +1,28 @@
 const express = require("express");
-const gmailRoutes = require("./routes/gmailCheckerRoutes");
-require("dotenv").config();
+const { config } = require("./config/index");
+const GmailChecker = require("./services/GmailChecker");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = config.port;
 
-app.use("/unread-emails", gmailRoutes);
+app.get("/unread-emails", async (req, res) => {
+  const gmailChecker = new GmailChecker(
+    config.gmailEmail,
+    config.gmailPassword,
+  );
+
+  try {
+    const unreadEmails = await gmailChecker.getUnreadEmailsCount();
+    console.log(
+      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`,
+    );
+    res.send(
+      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`,
+    );
+  } catch (error) {
+    res.status(500).send("An error occurred while fetching unread emails");
+  }
+});
 
 app.listen(port, () => {
   console.log(`Gmail checker service listening at http://localhost:${port}`);
