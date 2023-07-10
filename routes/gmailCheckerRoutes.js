@@ -12,12 +12,12 @@ router.get("/", async (req, res) => {
     const unreadEmails = await gmailChecker.getUnreadEmailsCount();
 
     console.log(
-      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, // Використовувати об'єкт конфігурації
+      `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, 
     );
 
     res.json({
       status: "success",
-      message: `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, // Виправлено дублювання коми та використання об'єкта конфігурації
+      message: `For ${config.gmailEmail}, number of unread emails: ${unreadEmails}`, 
     });
   } catch (error) {
     console.error("An error occurred:", error.message);
